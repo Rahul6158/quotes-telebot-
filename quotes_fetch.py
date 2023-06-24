@@ -1,35 +1,36 @@
-import streamlit as st
 import requests
+import telebot
 
-# Replace 'YOUR_BOT_TOKEN' with your Telegram bot token
-bot_token = '6010408512:AAHpLwF_PlsmHfoTAJkCIuKunopcVCB4yXw'
-url = f"https://api.telegram.org/bot{bot_token}/sendMessage"
+url = "https://quotes15.p.rapidapi.com/quotes/random/"
+
+headers = {
+    "X-RapidAPI-Key": "2dc054a387msh10f1aa3417dd608p1cf866jsn38be8f35af2d",
+    "X-RapidAPI-Host": "quotes15.p.rapidapi.com"
+}
 
 num_quotes = 3  # Number of quotes to fetch and display
 
-
-def send_message(chat_id, text):
-    payload = {
-        "chat_id": chat_id,
-        "text": text
-    }
-    response = requests.post(url, json=payload)
-    if response.status_code != 200:
-        st.error(f"Failed to send message: {response.text}")
+# Replace 'YOUR_BOT_TOKEN' with your Telegram bot token
+bot_token = '6010408512:AAHpLwF_PlsmHfoTAJkCIuKunopcVCB4yXw'
+bot = telebot.TeleBot(token=bot_token)
 
 
-def quote():
+@bot.message_handler(commands=['start'])
+def start(message):
+    welcome_message = "Welcome! I'm a chatbot that can generate random quotes.\n\nSend /quote to get a quote."
+    bot.send_message(chat_id=message.chat.id, text=welcome_message)
+
+
+@bot.message_handler(commands=['quote'])
+def quote(message):
     for _ in range(num_quotes):
-        response = requests.get("https://quotes15.p.rapidapi.com/quotes/random/",
-                                headers={"X-RapidAPI-Key": "2dc054a387msh10f1aa3417dd608p1cf866jsn38be8f35af2d",
-                                         "X-RapidAPI-Host": "quotes15.p.rapidapi.com"})
+        response = requests.get(url, headers=headers)
         data = response.json()
 
         if "content" in data:
-            quote_text = data["content"]
-            send_message(chat_id="5809290032", text=quote_text)
+            quote = data["content"]
+            bot.send_message(chat_id=message.chat.id, text=quote)
 
 
-def main():
 if __name__ == "__main__":
-    main()
+    bot.polling()
