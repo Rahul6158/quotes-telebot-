@@ -31,5 +31,5 @@ def quote(message):
             bot.send_message(chat_id=message.chat.id, text=quote)
 
 if __name__ == "__main__":
-    st.write("The bot is running.")  # Added message to indicate the bot is running
+    st.write("The bot is running.",width = 400)  # Added message to indicate the bot is running
     bot.polling()
