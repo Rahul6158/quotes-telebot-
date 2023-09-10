@@ -1,6 +1,5 @@
 import requests
 import telebot
-import streamlit as st
 
 url = "https://quotes15.p.rapidapi.com/quotes/random/"
 
@@ -12,13 +11,15 @@ headers = {
 num_quotes = 3  # Number of quotes to fetch and display
 
 # Replace 'YOUR_BOT_TOKEN' with your Telegram bot token
-bot_token = 'YOUR_BOT_TOKEN'
+bot_token = '6010408512:AAHpLwF_PlsmHfoTAJkCIuKunopcVCB4yXw'
 bot = telebot.TeleBot(token=bot_token)
+
 
 @bot.message_handler(commands=['start'])
 def start(message):
     welcome_message = "Welcome! I'm a chatbot that can generate random quotes.\n\nSend /quote to get a quote."
     bot.send_message(chat_id=message.chat.id, text=welcome_message)
+
 
 @bot.message_handler(commands=['quote'])
 def quote(message):
@@ -30,6 +31,6 @@ def quote(message):
             quote = data["content"]
             bot.send_message(chat_id=message.chat.id, text=quote)
 
+
 if __name__ == "__main__":
-    st.write("The bot is running.",width = 400)  # Added message to indicate the bot is running
     bot.polling()
